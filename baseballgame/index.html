@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>야구 게임!</title>
+</head>
+
+<body>
+    <h1>컴퓨터가 숫자를 생성하였습니다. 답을 맞춰보세요!</h1>
+    <p id="tryMsg"></p>
+    <input type="text" id="userNum">
+    <button onclick="check()">입력!</button>
+
+
+    <script>
+        let answer;
+
+        // random 3자리 숫자 answer
+        let i, j, k;
+        do {
+            i = Math.floor(Math.random() * 10);
+            j = Math.floor(Math.random() * 10);
+            k = Math.floor(Math.random() * 10);
+            answer = (i === 0) ? `0${j}${k}` : `${i}${j}${k}`;
+        } while (new Set(answer).size < 3);
+
+        let count = 1;
+
+        // 답 체크
+        function check() {
+            let userNum = document.getElementById("userNum").value;
+
+            if (!isOk(userNum)) {
+                tryMsg.textContent = "겹치지 않는 숫자 3개를 입력하세요.";
+                return;
+            }
+
+            let result = compare(userNum);
+            document.getElementById("tryMsg").textContent = `${count}번째 시도: ${result}`;
+            count++;
+
+            if (result === "3s0b") {
+                document.getElementById("tryMsg").textContent = "정답입니다!";
+                count = 1;
+            }
+        }
+
+        // 숫자 비교
+        function compare(userNum) {
+            let strike = 0;
+            let ball = 0;
+            for (let i = 0; i < 3; i++) {
+                if (userNum[i] === answer[i]) {
+                    strike++;
+                } else if (answer.includes(userNum[i])) {
+                    ball++;
+                }
+            }
+            if (strike === 3) {
+                return "3s0b";
+            } else if (strike > 0 || ball > 0) {
+                return `${strike}s${ball}b`;
+            } else {
+                return "아웃!";
+            }
+        }
+
+        // 사용자 입력 검증
+        function isOk(userNum) {
+            return userNum.length === 3 && new Set(userNum).size === 3;
+        }
+
+    </script>
+</body>
+
+</html>
